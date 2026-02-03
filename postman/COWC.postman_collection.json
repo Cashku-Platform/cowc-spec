@@ -1,0 +1,433 @@
+{
+  "info": {
+    "name": "Cashku Open Wealth Connect (COWC)",
+    "description": "API collection for integrating with COWC providers.\n\nSet the following environment variables:\n- `base_url`: Provider base URL (e.g., https://staging.cashku.ai/cowc/v1)\n- `client_id`: Your client ID\n- `client_secret`: Your client secret\n- `api_key`: Your API key\n- `binding_id`: Test user binding ID",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://staging.cashku.ai/cowc/v1"
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Get Access Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set('access_token', jsonData.access_token);",
+                  "",
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Has access_token', function () {",
+                  "    pm.expect(jsonData).to.have.property('access_token');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "client_credentials"
+                },
+                {
+                  "key": "client_id",
+                  "value": "{{client_id}}"
+                },
+                {
+                  "key": "client_secret",
+                  "value": "{{client_secret}}"
+                },
+                {
+                  "key": "scope",
+                  "value": "funds:read portfolio:read orders:write"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/oauth/token",
+              "host": ["{{base_url}}"],
+              "path": ["oauth", "token"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Funds",
+      "item": [
+        {
+          "name": "List Funds",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "X-COWC-Partner-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/funds?limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["funds"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "equity",
+                  "disabled": true
+                },
+                {
+                  "key": "risk_level",
+                  "value": "moderate",
+                  "disabled": true
+                },
+                {
+                  "key": "is_shariah",
+                  "value": "true",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Fund Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "X-COWC-Partner-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/funds/{{fund_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["funds", "{{fund_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Fund NAV History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "X-COWC-Partner-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/funds/{{fund_id}}/nav?from=2026-01-01&to=2026-02-01",
+              "host": ["{{base_url}}"],
+              "path": ["funds", "{{fund_id}}", "nav"],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "2026-01-01"
+                },
+                {
+                  "key": "to",
+                  "value": "2026-02-01"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Flows",
+      "item": [
+        {
+          "name": "Initiate Onboarding",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "X-COWC-Partner-Key",
+                "value": "{{api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"partner_user_id\": \"test_user_123\",\n  \"email\": \"test@example.com\",\n  \"phone\": \"+60123456789\",\n  \"callback_url\": \"myapp://cowc/callback\",\n  \"locale\": \"en\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/flows/onboarding",
+              "host": ["{{base_url}}"],
+              "path": ["flows", "onboarding"]
+            }
+          }
+        },
+        {
+          "name": "Initiate Link",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "X-COWC-Partner-Key",
+                "value": "{{api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"partner_user_id\": \"test_user_123\",\n  \"callback_url\": \"myapp://cowc/callback\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/flows/link",
+              "host": ["{{base_url}}"],
+              "path": ["flows", "link"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Portfolio",
+      "item": [
+        {
+          "name": "Get Binding Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "X-COWC-Partner-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/bindings/{{binding_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["bindings", "{{binding_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Portfolio Summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "X-COWC-Partner-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/bindings/{{binding_id}}/portfolio",
+              "host": ["{{base_url}}"],
+              "path": ["bindings", "{{binding_id}}", "portfolio"]
+            }
+          }
+        },
+        {
+          "name": "Get Holdings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "X-COWC-Partner-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/bindings/{{binding_id}}/holdings",
+              "host": ["{{base_url}}"],
+              "path": ["bindings", "{{binding_id}}", "holdings"]
+            }
+          }
+        },
+        {
+          "name": "Get Transactions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "X-COWC-Partner-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/bindings/{{binding_id}}/transactions?limit=50",
+              "host": ["{{base_url}}"],
+              "path": ["bindings", "{{binding_id}}", "transactions"],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "2026-01-01",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Preview Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "X-COWC-Partner-Key",
+                "value": "{{api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"binding_id\": \"{{binding_id}}\",\n  \"fund_id\": \"{{fund_id}}\",\n  \"order_type\": \"subscription\",\n  \"amount\": 1000.00,\n  \"currency\": \"MYR\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/orders/preview",
+              "host": ["{{base_url}}"],
+              "path": ["orders", "preview"]
+            }
+          }
+        },
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "X-COWC-Partner-Key",
+                "value": "{{api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"binding_id\": \"{{binding_id}}\",\n  \"fund_id\": \"{{fund_id}}\",\n  \"order_type\": \"subscription\",\n  \"amount\": 1000.00,\n  \"currency\": \"MYR\",\n  \"partner_reference_id\": \"partner_order_001\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/orders",
+              "host": ["{{base_url}}"],
+              "path": ["orders"]
+            }
+          }
+        },
+        {
+          "name": "Get Order Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "X-COWC-Partner-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/orders/{{order_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["orders", "{{order_id}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
