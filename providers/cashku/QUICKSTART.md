@@ -224,6 +224,36 @@ const expected = crypto.createHmac('sha256', webhookSecret)
 
 ---
 
+## 11. Extended Features (Optional)
+
+### Portfolio Scanner
+Free AI-powered portfolio analysis for lead generation:
+```http
+POST /cowc/v1/scanner/analyze
+{ "binding_id": "bind_xxx", "portfolio_data": {...} }
+```
+
+### Content API
+Educational articles and tips:
+```http
+GET /cowc/v1/content/articles?category=investing
+```
+
+### Notification Triggers
+Register triggers for push notifications:
+```http
+POST /cowc/v1/notifications/triggers
+{ "binding_id": "bind_xxx", "trigger_type": "portfolio_milestone", ... }
+```
+
+### Mini-App Option
+For fastest integration, embed Cashku's full experience via WebView:
+```
+https://partner.cashku.ai/mma/
+```
+
+---
+
 ## Support
 
 **Technical Support:** tech@cashku.my

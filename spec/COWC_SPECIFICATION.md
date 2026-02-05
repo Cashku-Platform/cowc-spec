@@ -41,7 +41,10 @@ A conformant COWC Provider MUST implement all REQUIRED endpoints and MAY impleme
 10. [Error Handling](#10-error-handling)
 11. [Security Requirements](#11-security-requirements)
 12. [Extensibility](#12-extensibility)
-13. [Appendix A: Cashku Implementation](#appendix-a-cashku-implementation)
+13. [Portfolio Scanner API](#13-portfolio-scanner-api) [OPTIONAL]
+14. [Content API](#14-content-api) [OPTIONAL]
+15. [Notification Triggers API](#15-notification-triggers-api) [OPTIONAL]
+16. [Appendix A: Cashku Implementation](#appendix-a-cashku-implementation)
 
 ---
 
@@ -811,9 +814,351 @@ Providers MAY extend the specification with:
 
 ---
 
+## 13. Portfolio Scanner API [OPTIONAL]
+
+The Portfolio Scanner API enables AI-powered portfolio analysis as a lead generation and engagement feature.
+
+### 13.1 Overview
+
+The scanner allows users to upload their existing investment portfolio (from any provider) and receive AI-generated insights, recommendations, and comparisons.
+
+### 13.2 Scopes
+
+| Scope | Description |
+|-------|-------------|
+| `scanner:write` | Submit portfolios for analysis |
+| `scanner:read` | Retrieve scan reports |
+
+### 13.3 Submit Portfolio for Analysis
+
+```http
+POST /cowc/v1/scanner/analyze
+Authorization: Bearer {access_token}
+Content-Type: application/json
+
+{
+  "binding_id": "bind_xxxxxxxxxxxxx",
+  "portfolio_data": {
+    "holdings": [
+      {
+        "fund_name": "ABC Growth Fund",
+        "fund_code": "ABC001",
+        "units": 1000,
+        "cost_per_unit": 1.50,
+        "current_value": 1800.00
+      }
+    ],
+    "total_value": 50000.00,
+    "currency": "MYR"
+  },
+  "user_profile": {
+    "age_range": "30-40",
+    "risk_tolerance": "moderate",
+    "investment_horizon": "5-10 years"
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "scan_id": "scan_xxxxxxxxxxxxx",
+  "status": "processing",
+  "estimated_completion": "2026-02-03T10:05:00Z"
+}
+```
+
+### 13.4 Get Scanner Report
+
+```http
+GET /cowc/v1/scanner/report/{scan_id}
+Authorization: Bearer {access_token}
+```
+
+**Response:**
+```json
+{
+  "scan_id": "scan_xxxxxxxxxxxxx",
+  "status": "completed",
+  "created_at": "2026-02-03T10:00:00Z",
+  "completed_at": "2026-02-03T10:03:00Z",
+  "analysis": {
+    "health_score": 72,
+    "diversification_score": 65,
+    "risk_alignment_score": 80,
+    "fee_efficiency_score": 70
+  },
+  "insights": [
+    {
+      "type": "warning",
+      "title": "High concentration in single sector",
+      "description": "60% of your portfolio is in technology funds...",
+      "recommendation": "Consider diversifying into other sectors"
+    },
+    {
+      "type": "opportunity",
+      "title": "Lower-fee alternatives available",
+      "description": "You could save RM 450/year with similar funds...",
+      "recommendation": "Review suggested alternatives below"
+    }
+  ],
+  "recommendations": [
+    {
+      "action": "switch",
+      "from_fund": "High Fee Growth Fund",
+      "to_fund_id": "fund_xxx",
+      "to_fund_name": "Cashku Growth Fund",
+      "potential_savings": 450.00,
+      "rationale": "Similar returns, lower management fee"
+    }
+  ],
+  "comparison": {
+    "current_projected_value_10y": 85000.00,
+    "optimized_projected_value_10y": 95000.00,
+    "potential_improvement": 10000.00
+  }
+}
+```
+
+### 13.5 Scanner Webhook Events
+
+| Event | Description |
+|-------|-------------|
+| `scanner.completed` | Analysis complete, report ready |
+| `scanner.failed` | Analysis failed |
+
+---
+
+## 14. Content API [OPTIONAL]
+
+The Content API provides educational articles, tips, and learning materials for partner apps.
+
+### 14.1 Scopes
+
+| Scope | Description |
+|-------|-------------|
+| `content:read` | Access educational content |
+
+### 14.2 List Articles
+
+```http
+GET /cowc/v1/content/articles?category=investing&limit=10
+Authorization: Bearer {access_token}
+```
+
+**Query Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `category` | string | Filter by category (investing, savings, retirement, etc.) |
+| `tags` | string | Comma-separated tags |
+| `limit` | integer | Results per page (max: 50) |
+| `offset` | integer | Pagination offset |
+
+**Response:**
+```json
+{
+  "articles": [
+    {
+      "article_id": "art_xxx",
+      "title": "Understanding Unit Trust Fees",
+      "summary": "Learn about the different types of fees...",
+      "category": "investing",
+      "tags": ["fees", "beginner", "unit-trust"],
+      "thumbnail_url": "https://...",
+      "read_time_minutes": 5,
+      "published_at": "2026-01-15T08:00:00Z"
+    }
+  ],
+  "pagination": {
+    "total": 45,
+    "limit": 10,
+    "offset": 0,
+    "has_more": true
+  }
+}
+```
+
+### 14.3 Get Article
+
+```http
+GET /cowc/v1/content/articles/{article_id}
+Authorization: Bearer {access_token}
+```
+
+**Response:**
+```json
+{
+  "article_id": "art_xxx",
+  "title": "Understanding Unit Trust Fees",
+  "summary": "Learn about the different types of fees...",
+  "content_html": "<p>When investing in unit trusts...</p>",
+  "content_markdown": "When investing in unit trusts...",
+  "category": "investing",
+  "tags": ["fees", "beginner", "unit-trust"],
+  "author": "Cashku Research Team",
+  "thumbnail_url": "https://...",
+  "read_time_minutes": 5,
+  "published_at": "2026-01-15T08:00:00Z",
+  "related_articles": ["art_yyy", "art_zzz"],
+  "related_funds": ["fund_xxx"]
+}
+```
+
+### 14.4 Get Tips
+
+Get contextual investment tips for display in partner app.
+
+```http
+GET /cowc/v1/content/tips?context=dashboard&limit=3
+Authorization: Bearer {access_token}
+```
+
+**Response:**
+```json
+{
+  "tips": [
+    {
+      "tip_id": "tip_xxx",
+      "text": "Regular investing (dollar-cost averaging) can help reduce market timing risk.",
+      "category": "strategy",
+      "action_url": "https://partner.cashku.ai/mma/learn/dca",
+      "action_text": "Learn more"
+    }
+  ]
+}
+```
+
+---
+
+## 15. Notification Triggers API [OPTIONAL]
+
+The Notification Triggers API allows partners to register for push notification events.
+
+### 15.1 Overview
+
+Partners can register triggers that, when conditions are met, cause the Provider to send a webhook. The partner then delivers the push notification to the user via their own notification system.
+
+### 15.2 Scopes
+
+| Scope | Description |
+|-------|-------------|
+| `notifications:write` | Manage notification triggers |
+| `notifications:read` | View registered triggers |
+
+### 15.3 Register Trigger
+
+```http
+POST /cowc/v1/notifications/triggers
+Authorization: Bearer {access_token}
+Content-Type: application/json
+
+{
+  "binding_id": "bind_xxxxxxxxxxxxx",
+  "trigger_type": "portfolio_milestone",
+  "conditions": {
+    "milestone_type": "returns_percent",
+    "threshold": 10
+  },
+  "notification_template": {
+    "title": "Congratulations! Your portfolio is up 10%!",
+    "body": "Your investments have grown. Tap to see details.",
+    "data": {
+      "deeplink": "mma://cashku/portfolio"
+    }
+  }
+}
+```
+
+**Trigger Types:**
+
+| Type | Description |
+|------|-------------|
+| `portfolio_milestone` | Portfolio reaches threshold (value, returns %) |
+| `fund_nav_change` | Fund NAV changes by threshold |
+| `order_status_change` | Order status updates |
+| `kyc_status_change` | KYC status updates |
+| `new_content` | New article matching tags |
+| `inactivity` | User hasn't opened app in N days |
+
+**Response:**
+```json
+{
+  "trigger_id": "trig_xxxxxxxxxxxxx",
+  "status": "active",
+  "created_at": "2026-02-03T10:00:00Z"
+}
+```
+
+### 15.4 List Triggers
+
+```http
+GET /cowc/v1/notifications/triggers?binding_id={binding_id}
+Authorization: Bearer {access_token}
+```
+
+**Response:**
+```json
+{
+  "triggers": [
+    {
+      "trigger_id": "trig_xxx",
+      "trigger_type": "portfolio_milestone",
+      "status": "active",
+      "conditions": {
+        "milestone_type": "returns_percent",
+        "threshold": 10
+      },
+      "created_at": "2026-02-03T10:00:00Z",
+      "last_fired_at": null
+    }
+  ]
+}
+```
+
+### 15.5 Delete Trigger
+
+```http
+DELETE /cowc/v1/notifications/triggers/{trigger_id}
+Authorization: Bearer {access_token}
+```
+
+### 15.6 Notification Webhook
+
+When a trigger fires, Provider sends a webhook:
+
+```http
+POST {partner_webhook_url}
+X-COWC-Event-Type: notification.triggered
+
+{
+  "event_id": "evt_xxx",
+  "event_type": "notification.triggered",
+  "data": {
+    "trigger_id": "trig_xxx",
+    "binding_id": "bind_xxx",
+    "notification": {
+      "title": "Congratulations! Your portfolio is up 10%!",
+      "body": "Your investments have grown. Tap to see details.",
+      "data": {
+        "deeplink": "mma://cashku/portfolio"
+      }
+    },
+    "context": {
+      "current_returns_percent": 10.5,
+      "portfolio_value": 16800.00
+    }
+  }
+}
+```
+
+Partner receives this webhook and delivers the push notification via their own system (FCM, APNs, etc.).
+
+---
+
 ## Appendix A: Cashku Implementation
 
-This appendix describes Cashku's implementation of the OWC specification.
+This appendix describes Cashku's implementation of the COWC specification.
 
 ### A.1 Provider Information
 
@@ -855,13 +1200,36 @@ API Key:       pk_{environment}_{random}
 | `x-cashku:goals:read` | View investment goals |
 | `x-cashku:goals:write` | Create/modify goals |
 | `x-cashku:prs:read` | View PRS account |
+| `scanner:read` | Access portfolio scanner reports |
+| `scanner:write` | Submit portfolios for scanning |
+| `content:read` | Access educational content |
+| `notifications:read` | View notification triggers |
+| `notifications:write` | Manage notification triggers |
 
-### A.6 Payment Methods
+### A.6 Mini-App (Partner Portal)
+
+Cashku offers a hosted Mini-App for partners who want a full Cashku experience embedded in their app:
+
+| URL | Description |
+|-----|-------------|
+| `partner.cashku.ai/{partner}/` | Full Cashku experience |
+| `partner.cashku.ai/{partner}/scanner` | Portfolio Scanner entry |
+| `partner.cashku.ai/{partner}/learn` | Educational content entry |
+
+Partners can customize branding (logo, colors) via the partner dashboard.
+
+**Mini-App Benefits:**
+- Fastest integration path (WebView only)
+- All features included automatically
+- Cashku handles all updates and maintenance
+- Full regulatory compliance built-in
+
+### A.7 Payment Methods
 
 Cashku supports:
 - FPX (Malaysian online banking)
 
-### A.7 Fund Categories
+### A.8 Fund Categories
 
 - `equity` - Equity funds
 - `bond` - Fixed income funds
@@ -869,7 +1237,7 @@ Cashku supports:
 - `balanced` - Balanced/mixed funds
 - `prs` - Private Retirement Scheme
 
-### A.8 Risk Levels
+### A.9 Risk Levels
 
 - `conservative`
 - `moderately_conservative`
@@ -877,7 +1245,7 @@ Cashku supports:
 - `moderately_aggressive`
 - `aggressive`
 
-### A.9 Test Scenarios
+### A.10 Test Scenarios
 
 | Scenario | Test Data |
 |----------|-----------|
@@ -886,18 +1254,18 @@ Cashku supports:
 | Payment success | Use FPX test bank (Maybank - success) |
 | Payment failure | Use FPX test bank (CIMB - failure) |
 
-### A.10 Rate Limits
+### A.11 Rate Limits
 
 | Environment | Requests/Minute | Requests/Hour |
 |-------------|-----------------|---------------|
 | Staging | 60 | 1,000 |
 | Production | 120 | 5,000 |
 
-### A.11 Support
+### A.12 Support
 
 **Technical Support:** tech@cashku.my
 
-### A.12 Compliance
+### A.13 Compliance
 
 - Malaysian PDPA compliant
 - SC Malaysia licensed
@@ -916,6 +1284,7 @@ Cashku supports:
 | Version | Date | Changes |
 |---------|------|---------|
 | 1.0.0 | 2026-02 | Initial draft |
+| 1.1.0 | 2026-02 | Added Portfolio Scanner API (Section 13), Content API (Section 14), Notification Triggers API (Section 15), Mini-App documentation |
 
 ---
 
