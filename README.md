@@ -3,7 +3,7 @@
 An open standard for integrating investment and wealth management capabilities into third-party applications.
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![Spec Version](https://img.shields.io/badge/Spec-v1.0.0-green.svg)](spec/COWC_SPECIFICATION.md)
+[![Spec Version](https://img.shields.io/badge/Spec-v1.1.0-green.svg)](spec/COWC_SPECIFICATION.md)
 
 ## Overview
 
@@ -18,6 +18,9 @@ COWC enables partner apps (super apps, lifestyle apps, banking apps) to offer in
 - **Order API** - Place subscription and redemption orders
 - **Embedded Flows** - WebView-based onboarding and payments
 - **Webhooks** - Real-time event notifications
+- **Portfolio Scanner API** [OPTIONAL] - AI-powered portfolio analysis
+- **Content API** [OPTIONAL] - Educational articles and tips
+- **Notification Triggers** [OPTIONAL] - Push notification integration
 
 ## Quick Links
 
@@ -98,6 +101,8 @@ See [samples/](samples/) for complete integration examples.
 
 ## API Overview
 
+### Core APIs (REQUIRED)
+
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/cowc/v1/oauth/token` | POST | Get access token |
@@ -112,7 +117,21 @@ See [samples/](samples/) for complete integration examples.
 | `/cowc/v1/orders` | POST | Create order |
 | `/cowc/v1/orders/{id}` | GET | Get order status |
 
+### Extended APIs (OPTIONAL)
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/cowc/v1/scanner/analyze` | POST | Submit portfolio for AI analysis |
+| `/cowc/v1/scanner/report/{id}` | GET | Get scanner report |
+| `/cowc/v1/content/articles` | GET | List educational articles |
+| `/cowc/v1/content/articles/{id}` | GET | Get article content |
+| `/cowc/v1/content/tips` | GET | Get contextual tips |
+| `/cowc/v1/notifications/triggers` | POST | Register notification trigger |
+| `/cowc/v1/notifications/triggers` | GET | List active triggers |
+
 ## Scopes
+
+### Core Scopes
 
 | Scope | Description |
 |-------|-------------|
@@ -121,6 +140,16 @@ See [samples/](samples/) for complete integration examples.
 | `transactions:read` | View transaction history |
 | `orders:write` | Submit orders |
 | `orders:read` | View order status |
+
+### Extended Scopes (Provider-dependent)
+
+| Scope | Description |
+|-------|-------------|
+| `scanner:read` | Access scanner reports |
+| `scanner:write` | Submit portfolios for analysis |
+| `content:read` | Access educational content |
+| `notifications:read` | View notification triggers |
+| `notifications:write` | Manage notification triggers |
 
 ## Contributing
 

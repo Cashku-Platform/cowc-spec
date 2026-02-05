@@ -428,6 +428,231 @@
           }
         }
       ]
+    },
+    {
+      "name": "Scanner",
+      "item": [
+        {
+          "name": "Submit Portfolio for Analysis",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "X-COWC-Partner-Key",
+                "value": "{{api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"binding_id\": \"{{binding_id}}\",\n  \"portfolio_data\": {\n    \"holdings\": [\n      {\n        \"fund_name\": \"Test Growth Fund\",\n        \"fund_code\": \"TGF001\",\n        \"units\": 1000,\n        \"cost_per_unit\": 1.50,\n        \"current_value\": 1800.00\n      }\n    ],\n    \"total_value\": 50000.00,\n    \"currency\": \"MYR\"\n  },\n  \"user_profile\": {\n    \"age_range\": \"30-40\",\n    \"risk_tolerance\": \"moderate\",\n    \"investment_horizon\": \"5-10 years\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/scanner/analyze",
+              "host": ["{{base_url}}"],
+              "path": ["scanner", "analyze"]
+            }
+          }
+        },
+        {
+          "name": "Get Scanner Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "X-COWC-Partner-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/scanner/report/{{scan_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["scanner", "report", "{{scan_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Content",
+      "item": [
+        {
+          "name": "List Articles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "X-COWC-Partner-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/content/articles?category=investing&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["content", "articles"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "investing"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Article",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "X-COWC-Partner-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/content/articles/{{article_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["content", "articles", "{{article_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Tips",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "X-COWC-Partner-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/content/tips?context=dashboard&limit=3",
+              "host": ["{{base_url}}"],
+              "path": ["content", "tips"],
+              "query": [
+                {
+                  "key": "context",
+                  "value": "dashboard"
+                },
+                {
+                  "key": "limit",
+                  "value": "3"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Register Trigger",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "X-COWC-Partner-Key",
+                "value": "{{api_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"binding_id\": \"{{binding_id}}\",\n  \"trigger_type\": \"portfolio_milestone\",\n  \"conditions\": {\n    \"milestone_type\": \"returns_percent\",\n    \"threshold\": 10\n  },\n  \"notification_template\": {\n    \"title\": \"Your portfolio is up 10%!\",\n    \"body\": \"Your investments have grown. Tap to see details.\",\n    \"data\": {\n      \"deeplink\": \"mma://cashku/portfolio\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/notifications/triggers",
+              "host": ["{{base_url}}"],
+              "path": ["notifications", "triggers"]
+            }
+          }
+        },
+        {
+          "name": "List Triggers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "X-COWC-Partner-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notifications/triggers?binding_id={{binding_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["notifications", "triggers"],
+              "query": [
+                {
+                  "key": "binding_id",
+                  "value": "{{binding_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Trigger",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "X-COWC-Partner-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/notifications/triggers/{{trigger_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["notifications", "triggers", "{{trigger_id}}"]
+            }
+          }
+        }
+      ]
     }
   ]
 }

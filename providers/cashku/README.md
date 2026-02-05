@@ -75,6 +75,19 @@ After testing:
 | Investment Goals | `x-cashku:goals:read/write` | Goal-based investing |
 | PRS Account | `x-cashku:prs:read` | Private Retirement Scheme |
 | Direct Debit | `x-cashku:directdebit:read/write` | Recurring investments |
+| Portfolio Scanner | `scanner:read/write` | AI-powered portfolio analysis |
+| Content/Learn | `content:read` | Educational articles and tips |
+| Notifications | `notifications:read/write` | Push notification triggers |
+
+### Mini-App (Partner Portal)
+
+Cashku offers a hosted Mini-App for partners:
+
+| URL | Description |
+|-----|-------------|
+| `partner.cashku.ai/{partner}/` | Full Cashku experience |
+| `partner.cashku.ai/{partner}/scanner` | Portfolio Scanner entry |
+| `partner.cashku.ai/{partner}/learn` | Educational content entry |
 
 ## Fund Categories
 
