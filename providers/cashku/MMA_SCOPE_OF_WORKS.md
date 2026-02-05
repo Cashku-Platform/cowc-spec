@@ -97,47 +97,46 @@ Option A: API Integration     │  Option B: Mini-App
 
 ---
 
-## Timeline
+## Phases
 
-| Phase | Name | Duration | Milestone |
-|-------|------|----------|-----------|
-| Phase 1 | Foundation | 4 weeks | OAuth + basic APIs ready, documentation delivered |
-| Phase 2 | User Linking & Mini-App | 4 weeks | Mini-App portal live, onboarding flow complete |
-| Phase 3 | Transactions | 4 weeks | Full investment flow, payments, webhooks |
-| Phase 4 | Extended Features | 4 weeks | Portfolio Scanner, Content API, Notifications |
-| Phase 5 | Production Readiness | 2 weeks | Security audit, production deployment, go-live |
-| **Total** | | **18 weeks** | |
+| Phase | Name | Milestone |
+|-------|------|-----------|
+| Phase 1 | Foundation | OAuth + basic APIs ready, documentation delivered |
+| Phase 2 | User Linking & Mini-App | Mini-App portal live, onboarding flow complete |
+| Phase 3 | Transactions | Full investment flow, payments, webhooks |
+| Phase 4 | Extended Features | Portfolio Scanner, Content API, Notifications |
+| Phase 5 | Production Readiness | Security audit, production deployment, go-live |
 
 ### Phase Details
 
-#### Phase 1: Foundation (Weeks 1-4)
+#### Phase 1: Foundation
 - OAuth 2.0 authentication implementation
 - Basic COWC API endpoints
 - Staging environment setup
 - Documentation and sample code delivery
 - MMA receives staging credentials
 
-#### Phase 2: User Linking & Mini-App (Weeks 5-8)
+#### Phase 2: User Linking & Mini-App
 - User binding (IUTA model) implementation
 - eKYC integration
 - Risk assessment flow
 - Mini-App portal development
 - Fund discovery APIs
 
-#### Phase 3: Transactions (Weeks 9-12)
+#### Phase 3: Transactions
 - Order placement APIs
 - FPX payment integration
 - Portfolio APIs
 - Webhook system
 - MMA webhook endpoint integration
 
-#### Phase 4: Extended Features (Weeks 13-16)
+#### Phase 4: Extended Features
 - Portfolio Scanner (AI analysis)
 - Content API (articles, tips)
 - Notification triggers
 - Mini-App enhancements
 
-#### Phase 5: Production Readiness (Weeks 17-18)
+#### Phase 5: Production Readiness
 - Security audit and penetration testing
 - Rate limiting and monitoring
 - Production environment setup
@@ -218,11 +217,11 @@ Option A: API Integration     │  Option B: Mini-App
 
 ## Change Management
 
-Any changes to scope, timeline, or deliverables must be:
+Any changes to scope or deliverables must be:
 
 1. Documented in writing
 2. Agreed by both parties
-3. Assessed for impact on timeline and resources
+3. Assessed for impact on resources
 4. Formally approved before implementation
 
 ---
